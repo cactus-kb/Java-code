@@ -1,0 +1,42 @@
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Request {
+    String method;
+    String psth;
+    String version;
+    Map<String, String> headers = new HashMap<>();
+    public static Request parse(InputStream is) {
+        Request request = new Request();
+
+        //UTF-8是假设的，实际上应该是通过 header去判断
+        Scanner scanner = new Scanner(is,"UTF-8");
+        String line;
+
+        line = scanner.nextLine();
+        String[] group = line.split(" ");
+        request.method = group[0];
+        request.psth = group[1];
+        request.version = group[2];
+
+        while (!((line = scanner.nextLine()).isEmpty())) {
+            String[] kv = line.split(":");
+            String key = kv[0].trim();
+            String value = kv[0].trim();
+            request.headers.put(key,value);
+        }
+        return request;
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "method='" + method + '\'' +
+                ", psth='" + psth + '\'' +
+                ", version='" + version + '\'' +
+                ", headers=" + headers +
+                '}';
+    }
+}
